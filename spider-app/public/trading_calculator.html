@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Strategies & Calculator Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & ROOT ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:   #fdf8f0;
+  --warm1:   #fff3e0;
+  --warm2:   #fce4d6;
+  --sage:    #e8f0e9;
+  --sky:     #e3f0fb;
+  --lavender:#ede8f5;
+  --mint:    #e2f5ef;
+  --gold:    #c8922a;
+  --gold-lt: #f0c060;
+  --rust:    #c0442a;
+  --teal:    #1a7f6e;
+  --navy:    #1c3a5e;
+  --slate:   #3c4f68;
+  --ink:     #1e2433;
+  --muted:   #7a8698;
+  --border:  rgba(60,79,104,0.12);
+  --shadow:  0 4px 24px rgba(30,36,51,0.10);
+  --shadow-lg: 0 12px 48px rgba(30,36,51,0.15);
+  --radius:  14px;
+  --font-display: 'DM Serif Display', serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: linear-gradient(135deg, #fdf8f0 0%, #f7eee2 25%, #eef4fb 50%, #f0f7f2 75%, #f5eefb 100%);
+  min-height: 100vh;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ===== HEADER ===== */
+.site-header {
+  background: linear-gradient(135deg, var(--navy) 0%, #2a4a7a 50%, var(--teal) 100%);
+  color: #fff;
+  padding: 36px 48px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.site-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+}
+.header-inner { position: relative; max-width: 1200px; margin: 0 auto; }
+.header-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  color: var(--gold-lt);
+}
+.header-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+.header-title span { color: var(--gold-lt); font-style: italic; }
+.header-sub { color: rgba(255,255,255,0.70); font-size: 14px; font-weight: 300; max-width: 580px; }
+.header-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.chip {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.chip:hover { background: rgba(255,255,255,0.22); transform: translateY(-1px); }
+.chip.active { background: var(--gold); border-color: var(--gold); color: #fff; }
+
+/* ===== MAIN LAYOUT ===== */
+.main { max-width: 1200px; margin: 0 auto; padding: 36px 24px 80px; }
+
+/* ===== NAV TABS ===== */
+.tab-nav {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  background: rgba(255,255,255,0.70);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow);
+}
+.tab-btn {
+  padding: 9px 18px;
+  border: none;
+  border-radius: 9px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  transition: all .2s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--navy); background: rgba(28,58,94,0.07); }
+.tab-btn.active {
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(28,58,94,0.3);
+}
+
+/* ===== TAB PANELS ===== */
+.tab-panel { display: none; animation: fadeUp .3s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== CARD ===== */
+.card {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+.card + .card { margin-top: 20px; }
+.card-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.card-sub { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+
+/* ===== GRID ===== */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ===== FORM ELEMENTS ===== */
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 6px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  background: rgba(255,255,255,0.9);
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(26,127,110,0.12);
+}
+.field .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.currency-row { display: flex; gap: 10px; align-items: flex-start; }
+.currency-badge {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  background: var(--cream);
+  color: var(--slate);
+  white-space: nowrap;
+  min-width: 64px;
+  text-align: center;
+  margin-top: 24px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  padding: 11px 24px;
+  border-radius: 9px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  letter-spacing: .3px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--navy), #2a5a8a);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(28,58,94,0.30);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(28,58,94,0.40); }
+.btn-teal {
+  background: linear-gradient(135deg, var(--teal), #22a090);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(26,127,110,0.30);
+}
+.btn-teal:hover { transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--slate);
+}
+.btn-ghost:hover { background: rgba(28,58,94,0.05); }
+.btn-sm { padding: 7px 16px; font-size: 13px; }
+.btn-block { width: 100%; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+/* ===== RESULT BOX ===== */
+.result-box {
+  background: linear-gradient(135deg, var(--navy) 0%, #1e4a7a 100%);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  color: #fff;
+  margin-top: 22px;
+}
+.result-box .r-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
+.result-box .r-value { font-family: var(--font-display); font-size: 30px; color: var(--gold-lt); }
+.result-box .r-sub { font-size: 12px; color: rgba(255,255,255,0.60); margin-top: 3px; }
+.result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+
+/* ===== STAT CARD ===== */
+.stat-card {
+  background: rgba(255,255,255,0.88);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  border-left: 4px solid var(--teal);
+}
+.stat-card.warn { border-left-color: var(--gold); }
+.stat-card.danger { border-left-color: var(--rust); }
+.stat-card .s-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+.stat-card .s-value { font-family: var(--font-mono); font-size: 20px; font-weight: 500; color: var(--navy); margin-top: 4px; }
+.stat-card .s-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* positive/negative color */
+.green { color: #1a7f3c; }
+.red { color: var(--rust); }
+.amber { color: var(--gold); }
+
+/* ===== TABLE ===== */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  background: var(--navy);
+  color: rgba(255,255,255,0.85);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}
+tbody tr:nth-child(even) { background: rgba(28,58,94,0.04); }
+tbody tr:hover { background: rgba(26,127,110,0.07); }
+tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--ink); }
+
+/* ===== STRATEGY CARDS ===== */
+.strat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.strat-card {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: box-shadow .2s, transform .2s;
+  position: relative;
+  overflow: hidden;
+}
+.strat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--navy));
+}
+.strat-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.strat-card .sc-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.tag-trend   { background: #e3f5ec; color: #1a7f3c; }
+.tag-reversal{ background: #fde8e4; color: #c0442a; }
+.tag-breakout{ background: #e3eeff; color: #1a4a9a; }
+.tag-quant   { background: #ede8f5; color: #6030a0; }
+.tag-classic { background: #fff3cd; color: #8a6020; }
+.tag-invest  { background: #e2f0fe; color: #1060a0; }
+.tag-risk    { background: #fff0e8; color: #a04020; }
+.tag-options { background: #e8f5f0; color: #1a6050; }
+.strat-card h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.strat-card p  { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* ===== CANDLE PATTERNS ===== */
+.candle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.candle-card {
+  background: rgba(255,255,255,0.88);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  transition: box-shadow .2s;
+}
+.candle-card:hover { box-shadow: var(--shadow); }
+.candle-visual {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 3px; height: 70px; margin-bottom: 12px;
+}
+.candle-body {
+  border-radius: 2px;
+  width: 16px;
+  position: relative;
+}
+.candle-body.bull { background: #1a7f3c; }
+.candle-body.bear { background: #c0442a; }
+.candle-body.doji-b { background: #1a4a9a; width: 18px; height: 3px !important; }
+.wick {
+  width: 2px;
+  background: inherit;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.wick-up { bottom: 100%; }
+.wick-dn { top: 100%; }
+.candle-card h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
+.candle-card .signal {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 8px; margin-bottom: 8px;
+}
+.signal-bull { background: #e3f5ec; color: #1a7f3c; }
+.signal-bear { background: #fde8e4; color: #c0442a; }
+.signal-neut { background: #f0f0f0; color: #666; }
+.candle-card p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ===== RISK METER ===== */
+.risk-meter { margin: 16px 0; }
+.risk-bar-bg { background: #e5e8ec; border-radius: 6px; height: 12px; overflow: hidden; }
+.risk-bar-fill { height: 100%; border-radius: 6px; transition: width .5s ease; }
+.risk-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ===== TOGGLE SWITCH ===== */
+.toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.toggle-label { font-size: 13px; font-weight: 500; color: var(--slate); }
+.toggle {
+  position: relative; width: 44px; height: 24px;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: #cdd5de; border-radius: 24px;
+  transition: background .2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  background: #fff; border-radius: 50%;
+  left: 3px; top: 3px;
+  transition: transform .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.toggle input:checked + .toggle-slider { background: var(--teal); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* ===== TOOLTIP ===== */
+.tooltip-wrap { position: relative; display: inline-block; }
+.tooltip-wrap:hover .tooltip-box { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.tooltip-box {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+  background: var(--ink); color: #fff; font-size: 12px; padding: 8px 12px;
+  border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s; z-index: 100;
+}
+
+/* ===== SECTION TITLE ===== */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.section-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+/* ===== DIVIDER ===== */
+.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+/* ===== ACCORDION ===== */
+.accord-item { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+.accord-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px; cursor: pointer; background: rgba(255,255,255,0.80);
+  font-weight: 500; font-size: 14px; color: var(--navy);
+  user-select: none; transition: background .2s;
+}
+.accord-head:hover { background: rgba(28,58,94,0.05); }
+.accord-head .arrow { font-size: 16px; transition: transform .25s; }
+.accord-item.open .accord-head .arrow { transform: rotate(90deg); }
+.accord-body { display: none; padding: 14px 18px 18px; font-size: 13px; color: var(--slate); line-height: 1.65; background: rgba(255,255,255,0.60); }
+.accord-item.open .accord-body { display: block; }
+
+/* ===== BADGE ===== */
+.badge {
+  display: inline-block; padding: 2px 9px;
+  border-radius: 10px; font-size: 11px; font-weight: 700;
+  letter-spacing: .4px; text-transform: uppercase;
+}
+.badge-navy { background: var(--navy); color: #fff; }
+.badge-teal { background: var(--teal); color: #fff; }
+.badge-gold { background: var(--gold); color: #fff; }
+.badge-rust { background: var(--rust); color: #fff; }
+
+/* ===== PROGRESS ROW ===== */
+.progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.progress-row .p-label { font-size: 12px; color: var(--slate); width: 140px; flex-shrink: 0; }
+.progress-row .p-bar-bg { flex: 1; background: #e5e8ec; border-radius: 4px; height: 8px; }
+.progress-row .p-bar { height: 8px; border-radius: 4px; }
+.progress-row .p-val { font-family: var(--font-mono); font-size: 12px; color: var(--navy); width: 38px; text-align: right; flex-shrink: 0; }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(28,58,94,0.2); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="site-header">
+  <div class="header-inner">
+    <div class="header-badge">Complete Trading Handbook</div>
+    <h1 class="header-title">Professional <span>Trading Calculator</span><br>& Strategy Hub</h1>
+    <p class="header-sub">A complete instrument for traders — covering classic Wyckoff to modern SMC, with live calculators for position sizing, risk, P&L, and more. INR & USD supported.</p>
+    <div class="header-chips">
+      <span class="chip active" onclick="showTab('calculators', this)">Calculators</span>
+      <span class="chip" onclick="showTab('strategies', this)">Strategies</span>
+      <span class="chip" onclick="showTab('candles', this)">Candlestick Patterns</span>
+      <span class="chip" onclick="showTab('schools', this)">Old vs Modern School</span>
+      <span class="chip" onclick="showTab('fundamentals', this)">Fundamentals Checklist</span>
+      <span class="chip" onclick="showTab('riskmanager', this)">Risk Manager</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('calculators', this)">📊 Calculators</button>
+  <button class="tab-btn" onclick="showTab('strategies', this)">📚 Strategies</button>
+  <button class="tab-btn" onclick="showTab('candles', this)">🕯️ Candlestick Patterns</button>
+  <button class="tab-btn" onclick="showTab('schools', this)">🎓 Old vs Modern School</button>
+  <button class="tab-btn" onclick="showTab('fundamentals', this)">🔬 Fundamentals</button>
+  <button class="tab-btn" onclick="showTab('riskmanager', this)">🛡️ Risk Manager</button>
+</div>
+
+<!-- ===================== CALCULATORS TAB ===================== -->
+<div class="tab-panel active" id="tab-calculators">
+
+  <!-- Currency Toggle -->
+  <div class="card" style="margin-bottom:20px; padding:18px 28px;">
+    <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+      <strong style="font-size:14px; color:var(--navy);">Currency Mode:</strong>
+      <div class="toggle-row" style="margin:0;">
+        <span class="toggle-label">₹ INR</span>
+        <label class="toggle">
+          <input type="checkbox" id="currToggle" onchange="toggleCurrency()">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label">$ USD</span>
+      </div>
+      <span id="currLabel" class="badge badge-teal">INR Mode</span>
+      <div style="margin-left:auto; font-size:12px; color:var(--muted);">1 USD ≈ <input id="usdRate" type="number" value="83.5" style="width:70px; padding:4px 8px; border:1.5px solid var(--border); border-radius:6px; font-size:12px;"> INR</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- POSITION SIZE CALCULATOR -->
+    <div class="card">
+      <div class="card-title">Position Size Calculator</div>
+      <div class="card-sub">Calculate optimal lot size based on account risk & stop-loss</div>
+      <div class="field">
+        <label>Account Capital <span id="c1" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="ps_capital" value="500000" placeholder="e.g. 500000">
+      </div>
+      <div class="field">
+        <label>Risk per Trade (%)</label>
+        <input type="number" id="ps_risk" value="1" step="0.1" min="0.1" max="10">
+        <div class="hint">Recommended: 0.5% – 2% per trade</div>
+      </div>
+      <div class="field">
+        <label>Entry Price <span id="c2" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="ps_entry" value="2500" placeholder="e.g. 2500">
+      </div>
+      <div class="field">
+        <label>Stop-Loss Price <span id="c3" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="ps_sl" value="2450" placeholder="e.g. 2450">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="calcPositionSize()">Calculate Position Size</button>
+      <div id="ps_result" class="result-box" style="display:none;">
+        <div class="result-grid">
+          <div><div class="r-label">Shares / Qty</div><div class="r-value" id="ps_qty">—</div></div>
+          <div><div class="r-label">Capital Deployed</div><div class="r-value" id="ps_deployed">—</div></div>
+          <div><div class="r-label">Max Risk ₹</div><div class="r-value" id="ps_maxrisk">—</div></div>
+          <div><div class="r-label">SL Distance %</div><div class="r-value" id="ps_sldist">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P&L CALCULATOR -->
+    <div class="card">
+      <div class="card-title">P&L Calculator</div>
+      <div class="card-sub">Profit & Loss with brokerage, taxes, and charges (NSE/BSE & US markets)</div>
+      <div class="field">
+        <label>Trade Type</label>
+        <select id="pl_type" onchange="updatePLForm()">
+          <option value="equity_delivery">Equity Delivery (NSE/BSE)</option>
+          <option value="equity_intraday">Equity Intraday</option>
+          <option value="futures">Futures</option>
+          <option value="options">Options</option>
+          <option value="us_stock">US Stocks (Nasdaq/NYSE)</option>
+          <option value="forex">Forex</option>
+        </select>
+      </div>
+      <div class="grid-2" style="gap:12px;">
+        <div class="field">
+          <label>Buy Price <span id="c4" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+          <input type="number" id="pl_buy" value="1000">
+        </div>
+        <div class="field">
+          <label>Sell Price <span id="c5" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+          <input type="number" id="pl_sell" value="1080">
+        </div>
+      </div>
+      <div class="grid-2" style="gap:12px;">
+        <div class="field">
+          <label>Quantity</label>
+          <input type="number" id="pl_qty" value="100">
+        </div>
+        <div class="field" id="pl_lot_field">
+          <label>Lot Size (F&O)</label>
+          <input type="number" id="pl_lotsize" value="1">
+        </div>
+      </div>
+      <button class="btn btn-teal btn-block" onclick="calcPnL()">Calculate P&L</button>
+      <div id="pl_result" class="result-box" style="display:none;">
+        <div class="result-grid">
+          <div><div class="r-label">Gross P&L</div><div class="r-value" id="pl_gross">—</div></div>
+          <div><div class="r-label">Total Charges</div><div class="r-value" id="pl_charges">—</div></div>
+          <div><div class="r-label">Net P&L</div><div class="r-value" id="pl_net">—</div></div>
+          <div><div class="r-label">Return %</div><div class="r-value" id="pl_pct">—</div></div>
+        </div>
+        <div id="pl_breakdown" style="margin-top:16px; font-size:12px; color:rgba(255,255,255,0.70);"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid-2" style="margin-top:20px;">
+
+    <!-- RISK-REWARD CALCULATOR -->
+    <div class="card">
+      <div class="card-title">Risk:Reward & Target Calculator</div>
+      <div class="card-sub">Find optimal targets for desired R:R ratios</div>
+      <div class="field">
+        <label>Entry Price <span id="c6" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="rr_entry" value="500">
+      </div>
+      <div class="field">
+        <label>Stop-Loss <span id="c7" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="rr_sl" value="480">
+      </div>
+      <div class="field">
+        <label>Desired R:R Ratio</label>
+        <select id="rr_ratio">
+          <option value="1.5">1:1.5</option>
+          <option value="2" selected>1:2</option>
+          <option value="2.5">1:2.5</option>
+          <option value="3">1:3</option>
+          <option value="4">1:4</option>
+          <option value="5">1:5</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Trade Direction</label>
+        <select id="rr_dir">
+          <option value="long">Long (Buy)</option>
+          <option value="short">Short (Sell)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="calcRR()">Calculate Targets</button>
+      <div id="rr_result" class="result-box" style="display:none;">
+        <div class="result-grid">
+          <div><div class="r-label">Target 1 (R:R)</div><div class="r-value" id="rr_t1">—</div></div>
+          <div><div class="r-label">Target 2 (R+50%)</div><div class="r-value" id="rr_t2">—</div></div>
+          <div><div class="r-label">Risk Amount</div><div class="r-value" id="rr_risk">—</div></div>
+          <div><div class="r-label">Reward Amount</div><div class="r-value" id="rr_reward">—</div></div>
+        </div>
+        <div id="rr_win_info" style="margin-top:14px; font-size:12px; color:rgba(255,255,255,0.70);"></div>
+      </div>
+    </div>
+
+    <!-- FIBONACCI CALCULATOR -->
+    <div class="card">
+      <div class="card-title">Fibonacci Retracement & Extension</div>
+      <div class="card-sub">Classic Fibonacci levels for support, resistance & targets</div>
+      <div class="field">
+        <label>Swing High <span id="c8" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="fib_high" value="1200">
+      </div>
+      <div class="field">
+        <label>Swing Low <span id="c9" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="fib_low" value="900">
+      </div>
+      <div class="field">
+        <label>Trend Direction</label>
+        <select id="fib_dir">
+          <option value="up">Uptrend (Retracement from High)</option>
+          <option value="down">Downtrend (Retracement from Low)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="calcFibonacci()">Calculate Fibonacci Levels</button>
+      <div id="fib_result" style="margin-top:16px; display:none;">
+        <div class="tbl-wrap">
+          <table id="fib_table">
+            <thead><tr><th>Level</th><th>Ratio</th><th>Price</th><th>Type</th></tr></thead>
+            <tbody id="fib_tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid-2" style="margin-top:20px;">
+
+    <!-- PIVOT POINT CALCULATOR -->
+    <div class="card">
+      <div class="card-title">Pivot Point Calculator</div>
+      <div class="card-sub">Standard, Camarilla, Fibonacci, and Woodie pivot levels</div>
+      <div class="grid-3" style="gap:12px;">
+        <div class="field">
+          <label>Previous High</label>
+          <input type="number" id="pv_high" value="18500">
+        </div>
+        <div class="field">
+          <label>Previous Low</label>
+          <input type="number" id="pv_low" value="18200">
+        </div>
+        <div class="field">
+          <label>Previous Close</label>
+          <input type="number" id="pv_close" value="18350">
+        </div>
+      </div>
+      <div class="field">
+        <label>Pivot Method</label>
+        <select id="pv_method">
+          <option value="standard">Standard</option>
+          <option value="camarilla">Camarilla</option>
+          <option value="fibonacci">Fibonacci</option>
+          <option value="woodie">Woodie</option>
+        </select>
+      </div>
+      <button class="btn btn-teal btn-block" onclick="calcPivots()">Calculate Pivots</button>
+      <div id="pv_result" style="margin-top:16px; display:none;">
+        <div class="tbl-wrap">
+          <table id="pv_table">
+            <thead><tr><th>Level</th><th>Value</th><th>Significance</th></tr></thead>
+            <tbody id="pv_tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BREAKEVEN & COMPOUND CALC -->
+    <div class="card">
+      <div class="card-title">Breakeven & Compound Growth</div>
+      <div class="card-sub">Martingale recovery, streak analysis & compounding returns</div>
+      <div class="field">
+        <label>Starting Capital <span id="c10" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="cg_capital" value="100000">
+      </div>
+      <div class="field">
+        <label>Monthly Return Target (%)</label>
+        <input type="number" id="cg_monthly" value="3" step="0.5">
+      </div>
+      <div class="field">
+        <label>Duration (Months)</label>
+        <input type="number" id="cg_months" value="12">
+      </div>
+      <div class="field">
+        <label>Win Rate (%)</label>
+        <input type="number" id="cg_winrate" value="55" step="1">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="calcCompound()">Project Growth</button>
+      <div id="cg_result" class="result-box" style="display:none;">
+        <div class="result-grid">
+          <div><div class="r-label">Final Capital</div><div class="r-value" id="cg_final">—</div></div>
+          <div><div class="r-label">Total Gain</div><div class="r-value" id="cg_gain">—</div></div>
+          <div><div class="r-label">CAGR</div><div class="r-value" id="cg_cagr">—</div></div>
+          <div><div class="r-label">Max Streak Risk</div><div class="r-value" id="cg_streak">—</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MARGIN & LEVERAGE -->
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Margin & Leverage Calculator</div>
+    <div class="card-sub">Calculate margin requirements for Futures, Options and Forex positions</div>
+    <div class="grid-4">
+      <div class="field">
+        <label>Instrument</label>
+        <select id="mg_inst">
+          <option value="futures">Futures (India)</option>
+          <option value="options">Options (India)</option>
+          <option value="forex">Forex</option>
+          <option value="us_margin">US Margin Account</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Contract / Stock Price</label>
+        <input type="number" id="mg_price" value="50000">
+      </div>
+      <div class="field">
+        <label>Lot / Quantity</label>
+        <input type="number" id="mg_qty" value="50">
+      </div>
+      <div class="field">
+        <label>Leverage / Margin %</label>
+        <input type="number" id="mg_lev" value="15" step="1">
+        <div class="hint">Margin %. e.g. 15 = 15% initial margin</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calcMargin()">Calculate Margin</button>
+    <div id="mg_result" style="margin-top:18px; display:none;">
+      <div class="grid-4">
+        <div class="stat-card"><div class="s-label">Contract Value</div><div class="s-value" id="mg_cv">—</div></div>
+        <div class="stat-card warn"><div class="s-label">Margin Required</div><div class="s-value" id="mg_req">—</div></div>
+        <div class="stat-card"><div class="s-label">Effective Leverage</div><div class="s-value" id="mg_eff">—</div></div>
+        <div class="stat-card danger"><div class="s-label">1% Move Impact</div><div class="s-value" id="mg_impact">—</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end calculators tab -->
+
+<!-- ===================== STRATEGIES TAB ===================== -->
+<div class="tab-panel" id="tab-strategies">
+  <div class="section-title">Trading Strategies Reference</div>
+  <div class="section-sub">All major strategies from trend-following to options — click any card for a deeper breakdown</div>
+
+  <div style="margin-bottom:20px;">
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+      <button class="btn btn-sm btn-primary" onclick="filterStrats('all')">All</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('trend')">Trend</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('reversal')">Reversal</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('breakout')">Breakout</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('classic')">Old School</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('quant')">Quantitative</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('invest')">Investing</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('risk')">Risky Systems</button>
+      <button class="btn btn-sm btn-ghost" onclick="filterStrats('options')">Options</button>
+    </div>
+  </div>
+
+  <div class="strat-grid" id="stratGrid"></div>
+
+  <!-- Strategy Detail Modal-->
+  <div id="stratModal" style="display:none; margin-top:24px;">
+    <div class="card" id="stratModalContent"></div>
+  </div>
+</div>
+
+<!-- ===================== CANDLES TAB ===================== -->
+<div class="tab-panel" id="tab-candles">
+  <div class="section-title">Japanese Candlestick Patterns</div>
+  <div class="section-sub">Complete visual guide — single, dual, and triple candle formations with origin, meaning, and practical application</div>
+
+  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;">
+    <button class="btn btn-sm btn-primary" onclick="filterCandles('all')">All Patterns</button>
+    <button class="btn btn-sm btn-ghost" onclick="filterCandles('bullish')">Bullish</button>
+    <button class="btn btn-sm btn-ghost" onclick="filterCandles('bearish')">Bearish</button>
+    <button class="btn btn-sm btn-ghost" onclick="filterCandles('neutral')">Neutral / Indecision</button>
+    <button class="btn btn-sm btn-ghost" onclick="filterCandles('single')">Single Candle</button>
+    <button class="btn btn-sm btn-ghost" onclick="filterCandles('multi')">Multi Candle</button>
+  </div>
+
+  <div class="candle-grid" id="candleGrid"></div>
+</div>
+
+<!-- ===================== SCHOOLS TAB ===================== -->
+<div class="tab-panel" id="tab-schools">
+  <div class="section-title">Old School vs Modern School of Trading</div>
+  <div class="section-sub">A comprehensive comparison of classical and contemporary trading philosophies, tools, and methodology</div>
+
+  <div class="grid-2" style="margin-bottom:24px;">
+    <div class="card" style="border-top:4px solid var(--gold);">
+      <div class="card-title" style="color:var(--gold);">🏛️ Old School Classical Methods</div>
+      <div class="card-sub">1900s – 1990s | Foundation Pillars of Technical Analysis</div>
+      <p style="font-size:13px; color:var(--slate); line-height:1.7;">Born from the minds of legendary traders — Dow, Wyckoff, Gann, and Livermore. Old school methods are pure, structural, and deeply psychological. They require patience, reading the tape, understanding accumulation/distribution, and respecting natural market cycles. These principles hold today because human psychology hasn't changed.</p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--teal);">
+      <div class="card-title" style="color:var(--teal);">🚀 Modern School of Trading</div>
+      <div class="card-sub">2000s – Present | Data-Driven, Algorithmic, and Institutional</div>
+      <p style="font-size:13px; color:var(--slate); line-height:1.7;">Modern trading evolved with computing power, high-frequency systems, and global market connectivity. Smart Money Concepts (SMC), Order Flow, and algorithmic execution represent the new language of markets. The best modern traders blend quantitative rigor with price-action insight, operating at machine speed with institutional precision.</p>
+    </div>
+  </div>
+
+  <div id="schoolsContent"></div>
+</div>
+
+<!-- ===================== FUNDAMENTALS TAB ===================== -->
+<div class="tab-panel" id="tab-fundamentals">
+  <div class="section-title">Investment Fundamentals Checklist</div>
+  <div class="section-sub">A structured due-diligence framework for equity investing — rate any company systematically</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Company Scorecard</div>
+      <div class="card-sub">Score each category 1–10 for a comprehensive rating</div>
+      <div id="fundamentalForm"></div>
+      <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="calcFundamental()">Generate Score Report</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Score Report</div>
+      <div class="card-sub">Rating breakdown with investment signal</div>
+      <div id="fundamentalReport">
+        <p style="color:var(--muted); font-size:13px; margin-top:20px;">Fill in the scorecard and click Generate Score Report to see your analysis here.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Key Financial Ratios Explained</div>
+    <div class="card-sub">Quick reference for all foundational metrics</div>
+    <div id="ratiosContent"></div>
+  </div>
+</div>
+
+<!-- ===================== RISK MANAGER TAB ===================== -->
+<div class="tab-panel" id="tab-riskmanager">
+  <div class="section-title">Advanced Risk Management Dashboard</div>
+  <div class="section-sub">Portfolio-level risk controls, drawdown analysis, and position sizing systems</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Portfolio Risk Parameters</div>
+      <div class="card-sub">Define your risk rules for the trading session</div>
+      <div class="field">
+        <label>Total Portfolio Capital <span id="crm1" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="rm_capital" value="1000000">
+      </div>
+      <div class="field">
+        <label>Max Daily Loss Limit (%)</label>
+        <input type="number" id="rm_daily" value="2" step="0.5">
+        <div class="hint">Once hit, stop trading for the day. Industry standard: 2–3%</div>
+      </div>
+      <div class="field">
+        <label>Max Drawdown Tolerance (%)</label>
+        <input type="number" id="rm_maxdd" value="15" step="1">
+        <div class="hint">Portfolio drawdown at which to reduce position sizes or pause</div>
+      </div>
+      <div class="field">
+        <label>Risk per Trade (%)</label>
+        <input type="number" id="rm_pertrade" value="1" step="0.1">
+      </div>
+      <div class="field">
+        <label>Max Concurrent Positions</label>
+        <input type="number" id="rm_maxpos" value="5">
+      </div>
+      <div class="field">
+        <label>Avg Win:Loss Ratio</label>
+        <input type="number" id="rm_wl" value="2" step="0.1">
+      </div>
+      <div class="field">
+        <label>Historical Win Rate (%)</label>
+        <input type="number" id="rm_winrate" value="55">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="calcRiskDash()">Analyse Risk Profile</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Risk Dashboard</div>
+      <div id="rmDash">
+        <p style="color:var(--muted); font-size:13px; margin-top:20px;">Enter parameters and click Analyse Risk Profile.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Kelly Criterion & Optimal Bet Sizing</div>
+    <div class="card-sub">Mathematical framework for position sizing — derived from information theory</div>
+    <div class="grid-3">
+      <div class="field">
+        <label>Win Probability (%)</label>
+        <input type="number" id="kc_win" value="55" step="1">
+      </div>
+      <div class="field">
+        <label>Average Win <span id="crm2" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="kc_avgwin" value="2000">
+      </div>
+      <div class="field">
+        <label>Average Loss <span id="crm3" class="badge badge-teal" style="font-size:10px;">₹</span></label>
+        <input type="number" id="kc_avgloss" value="1000">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-teal" onclick="calcKelly()">Calculate Kelly %</button>
+    </div>
+    <div id="kc_result" style="display:none; margin-top:16px;">
+      <div class="grid-4">
+        <div class="stat-card"><div class="s-label">Full Kelly</div><div class="s-value" id="kc_full">—</div><div class="s-sub">Aggressive — theoretical max growth</div></div>
+        <div class="stat-card warn"><div class="s-label">Half Kelly</div><div class="s-value" id="kc_half">—</div><div class="s-sub">Balanced — recommended for most traders</div></div>
+        <div class="stat-card"><div class="s-label">Quarter Kelly</div><div class="s-value" id="kc_quarter">—</div><div class="s-sub">Conservative — drawdown resistant</div></div>
+        <div class="stat-card"><div class="s-label">Expected Value</div><div class="s-value" id="kc_ev">—</div><div class="s-sub">Per trade, per ₹1 risked</div></div>
+      </div>
+      <div id="kc_note" style="margin-top:14px; padding:14px; background:var(--warm1); border-radius:10px; font-size:13px; color:var(--slate);"></div>
+    </div>
+  </div>
+
+  <!-- Drawdown Recovery Table -->
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Drawdown Recovery Table</div>
+    <div class="card-sub">How much gain you need to recover from various drawdowns — a sobering reality check</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Drawdown %</th><th>Recovery Needed %</th><th>Difficulty</th><th>Strategy Note</th></tr></thead>
+        <tbody>
+          <tr><td class="amber font-bold">-10%</td><td class="green">+11.1%</td><td><span class="badge badge-teal">Manageable</span></td><td>Normal course; resume standard sizing</td></tr>
+          <tr><td class="amber">-15%</td><td>+17.6%</td><td><span class="badge badge-teal">Moderate</span></td><td>Reduce size by 25%, review strategy</td></tr>
+          <tr><td class="amber">-20%</td><td>+25%</td><td><span class="badge badge-gold">Difficult</span></td><td>Reduce size by 50%, take a break</td></tr>
+          <tr><td class="red">-25%</td><td>+33%</td><td><span class="badge badge-gold">Hard</span></td><td>Paper trade for 2 weeks; identify errors</td></tr>
+          <tr><td class="red">-30%</td><td>+42.9%</td><td><span class="badge badge-rust">Severe</span></td><td>Full strategy review; consider coaching</td></tr>
+          <tr><td class="red">-40%</td><td>+66.7%</td><td><span class="badge badge-rust">Critical</span></td><td>Stop trading; deep introspection needed</td></tr>
+          <tr><td class="red font-bold">-50%</td><td class="red font-bold">+100%</td><td><span class="badge badge-rust">Catastrophic</span></td><td>Rebuild from scratch; fundamental flaw</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<footer>
+  <strong>Professional Trading Handbook</strong> — For educational use only. Not financial advice. All calculations are approximations.<br>
+  Markets carry risk. Always manage capital responsibly.
+</footer>
+
+<script>
+/* ===========================
+   DATA STORES
+   =========================== */
+
+const STRATEGIES = [
+  // Trend
+  { id:'swing', tag:'trend', name:'Swing Trading', desc:'Holds positions days–weeks to capture medium-term price swings using technical levels, momentum indicators, and market structure.' },
+  { id:'trend_follow', tag:'trend', name:'Trend Following', desc:'Trades in the direction of the dominant trend identified via moving averages, ADX, or price highs/lows. Classic rule: "The trend is your friend."' },
+  { id:'position', tag:'trend', name:'Position Trading', desc:'Long-term macro approach holding weeks to months based on major trend direction and fundamental catalysts.' },
+  { id:'momentum', tag:'trend', name:'Momentum Trading', desc:'Buys stocks moving strongly upward with increasing volume. Relies on relative strength indicators and acceleration filters.' },
+  { id:'pyramid', tag:'trend', name:'Pyramid Trading', desc:'Systematically adds to winning positions as the trend continues. Reduces average cost/risk and maximises winning trades.' },
+  // Reversal
+  { id:'mean_rev', tag:'reversal', name:'Mean Reversion', desc:'Assumes prices revert to their statistical mean after extremes. Uses Bollinger Bands, RSI, and z-score analysis to identify overextensions.' },
+  { id:'countertrend', tag:'reversal', name:'Countertrend Trading', desc:'Trades against the prevailing trend expecting exhaustion and reversal. High skill required; uses divergence, exhaustion candles, and volume patterns.' },
+  { id:'sr', tag:'reversal', name:'Support & Resistance', desc:'Buys at established support zones and sells near resistance. Foundation of all price-action trading across all timeframes.' },
+  { id:'range', tag:'reversal', name:'Range Trading', desc:'Profits from sideways markets by buying the low end and selling the high end of a defined range. Requires ADX < 20 for optimal conditions.' },
+  { id:'channel', tag:'reversal', name:'Channel Trading', desc:'Uses parallel trend channels to identify high-probability entry zones. Parallel lines contain price; breakouts signal trend change.' },
+  { id:'turtle_soup', tag:'reversal', name:'Turtle Soup Strategy', desc:'Fades false breakouts — the opposite of Turtle Trading. Enter when a "breakout" quickly reverses back inside the consolidation zone.' },
+  // Breakout
+  { id:'breakout', tag:'breakout', name:'Breakout Trading', desc:'Enters trades when price breaches key levels with volume confirmation. Look for cup & handle, consolidation boxes, or triangle formations.' },
+  { id:'orb', tag:'breakout', name:'Opening Range Breakout (ORB)', desc:'Trades breakout of the high/low established in the first 15–30 minutes of market open. Popular for intraday Nifty, BankNifty, and US stocks.' },
+  { id:'breakout_box', tag:'breakout', name:'Breakout Box Strategy', desc:'Defines a rectangular consolidation box and trades the breakout direction with a stop below/above the opposite side of the box.' },
+  // Old school
+  { id:'dow', tag:'classic', name:'Dow Theory', desc:'The original: markets move in three trends (primary, secondary, minor), confirmed by both price and volume. Still the backbone of all technical analysis.' },
+  { id:'wyckoff', tag:'classic', name:'Wyckoff Method', desc:'Analyses accumulation and distribution phases of smart money. Four phases: Accumulation → Markup → Distribution → Markdown. A complete market cycle model.' },
+  { id:'gann', tag:'classic', name:'Gann Theory', desc:'Uses geometric angles (1×1, 2×1), time cycles, and square of 9 to predict market turns. Requires deep study — highly subjective but revered by veterans.' },
+  { id:'livermore', tag:'classic', name:'Livermore Method', desc:'Jesse Livermore\'s approach: momentum, price action, key numbers, and strict money management. His Reminiscences of a Stock Operator remains a trading bible.' },
+  { id:'elliott', tag:'classic', name:'Elliott Wave Theory', desc:'Five-wave impulse + three-wave correction structure based on Fibonacci and crowd psychology. Identifies where a market sits within its grand cycle.' },
+  { id:'pnf', tag:'classic', name:'Point and Figure Charts', desc:'Eliminates time from analysis — only records significant price changes. Identifies clean support/resistance and breakout signals without noise.' },
+  { id:'turtle', tag:'classic', name:'Turtle Trading System', desc:'Richard Dennis\'s rules-based trend system: 20-day and 55-day channel breakouts, fixed position sizing by ATR, and strict stop rules. Legendary 1983 experiment.' },
+  // Quant
+  { id:'fib_strat', tag:'quant', name:'Fibonacci Trading', desc:'Uses the golden ratio (0.618, 0.382, 0.236) for retracement and extension targets. Works because enough traders act on these levels creating self-fulfilling reactions.' },
+  { id:'algo', tag:'quant', name:'Algorithmic Trading', desc:'Computer-executed rule-based systems that remove emotion. Can be trend-following, mean-reversion, or arbitrage — backtested and optimised quantitatively.' },
+  { id:'stat_arb', tag:'quant', name:'Statistical Arbitrage', desc:'Exploits short-term mispricings between correlated securities using z-score, cointegration, and mean-reversion signals. Requires quantitative skills.' },
+  { id:'pairs', tag:'quant', name:'Pair Trading', desc:'Takes a long position in one asset and short in a correlated asset when their spread diverges. Market-neutral strategy immune to broad market moves.' },
+  // Risky
+  { id:'martingale', tag:'risk', name:'Martingale Strategy', desc:'Doubles trade size after every loss, expecting an eventual win to recover all. Mathematically sound but practically catastrophic — requires infinite capital.' },
+  { id:'anti_martin', tag:'risk', name:'Reverse Martingale', desc:'Doubles size after wins to maximise profitable streaks. More rational than Martingale. Still risky during winning-streak reversals.' },
+  { id:'grid', tag:'risk', name:'Grid Trading', desc:'Places buy and sell orders at fixed intervals above and below the market. Profits from volatility in ranging markets but bleeds in trending ones.' },
+  { id:'avg_down', tag:'risk', name:'Averaging Down', desc:'Adds to losing positions to lower average cost. Dangerous unless fundamental thesis is intact. Responsible for most large losses in history — use sparingly.' },
+  // Investing
+  { id:'value', tag:'invest', name:'Value Investing', desc:'Buys fundamentally sound businesses trading below intrinsic value (Buffett, Graham). Requires patience of years; needs deep fundamental research.' },
+  { id:'growth', tag:'invest', name:'Growth Investing', desc:'Invests in companies with above-average earnings growth, often at premium valuations. P/E is secondary to revenue trajectory and market opportunity.' },
+  { id:'canslim', tag:'invest', name:'CAN SLIM (O\'Neil)', desc:'C-urrent earnings, A-nnual earnings, N-ew product, S-upply/demand, L-eader, I-nstitutional support, M-arket direction. Combines fundamentals + technicals.' },
+  { id:'dividend', tag:'invest', name:'Dividend Investing', desc:'Focuses on income-generating stocks with consistent dividend history. Compounding reinvestment over decades builds significant wealth.' },
+  { id:'sector_rot', tag:'invest', name:'Sector Rotation', desc:'Allocates capital to leading sectors at each phase of the economic cycle. Know when to rotate from defensive to cyclical, and back.' },
+  { id:'carry', tag:'invest', name:'Carry Trade', desc:'Borrows in low-interest currencies and invests in high-yield currencies. Profits from interest rate differentials. Vulnerable to sudden risk-off events.' },
+  // Options
+  { id:'cov_call', tag:'options', name:'Covered Call', desc:'Own 100 shares, sell one call above current price. Generates income, caps upside. Ideal in flat to mild bull markets.' },
+  { id:'iron_condor', tag:'options', name:'Iron Condor', desc:'Sells both a call spread and put spread. Profits when the underlying stays within a defined range. Negative gamma — losses accelerate with big moves.' },
+  { id:'straddle', tag:'options', name:'Straddle', desc:'Buys both a call and put at the same strike. Profits from large moves in either direction. Useful around earnings and major events.' },
+];
+
+const CANDLE_PATTERNS = [
+  // Single bullish
+  { id:'hammer', signal:'bullish', type:'single', name:'Hammer',
+    desc:'Small body at top, long lower shadow (2× body). Forms after downtrend. Shows buyers overwhelmed sellers by close. Crucial context: must be at support or demand zone.',
+    hint:'One of the most reliable reversal signals in a downtrend.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:2px;height:8px;background:#1a7f3c;"></div>
+      <div style="width:16px;height:16px;background:#1a7f3c;border-radius:2px;"></div>
+      <div style="width:2px;height:40px;background:#1a7f3c;"></div>
+    </div>` },
+  { id:'inv_hammer', signal:'bullish', type:'single', name:'Inverted Hammer',
+    desc:'Long upper shadow, small body at bottom. Found at the end of downtrends. The long wick shows buyers attempted a rally — a good sign but needs confirmation next candle.',
+    hint:'Needs next candle to close bullish for confirmation.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:2px;height:38px;background:#1a7f3c;"></div>
+      <div style="width:16px;height:16px;background:#1a7f3c;border-radius:2px;"></div>
+      <div style="width:2px;height:6px;background:#1a7f3c;"></div>
+    </div>` },
+  { id:'marubozu_bull', signal:'bullish', type:'single', name:'Bullish Marubozu',
+    desc:'Tall green candle with no wicks. Pure buying pressure throughout the session. Opens at low, closes at high. Very strong bullish signal, especially on high volume.',
+    hint:'The strongest single bullish candle — used by institutions as trend confirmation.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:20px;height:62px;background:#1a7f3c;border-radius:2px;"></div>
+    </div>` },
+  // Single bearish
+  { id:'shooting_star', signal:'bearish', type:'single', name:'Shooting Star',
+    desc:'Long upper shadow, small body near the bottom. Found in uptrends. Buyers pushed price high but sellers took control by close. Classic exhaustion signal at resistance.',
+    hint:'Named for a falling star — most effective at overbought zones.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:2px;height:38px;background:#c0442a;"></div>
+      <div style="width:16px;height:16px;background:#c0442a;border-radius:2px;"></div>
+      <div style="width:2px;height:6px;background:#c0442a;"></div>
+    </div>` },
+  { id:'hang_man', signal:'bearish', type:'single', name:'Hanging Man',
+    desc:'Same shape as Hammer but in an uptrend — bearish warning. Sellers briefly controlled but buyers recovered. The failure to hold lows is a red flag for bulls.',
+    hint:'Context is everything — shape is identical to hammer but in opposite trend.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:2px;height:8px;background:#c0442a;"></div>
+      <div style="width:16px;height:16px;background:#c0442a;border-radius:2px;"></div>
+      <div style="width:2px;height:38px;background:#c0442a;"></div>
+    </div>` },
+  { id:'marubozu_bear', signal:'bearish', type:'single', name:'Bearish Marubozu',
+    desc:'Tall red candle with no wicks. Pure selling pressure. Opens at high, closes at low. Institutions and operators clear positions aggressively.',
+    hint:'Extremely bearish — treat as a distribution signal in context.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:20px;height:62px;background:#c0442a;border-radius:2px;"></div>
+    </div>` },
+  // Neutral
+  { id:'doji', signal:'neutral', type:'single', name:'Doji',
+    desc:'Open and close are equal or nearly equal. Represents indecision — perfect balance of buyers and sellers. After trend, signals potential reversal or consolidation.',
+    hint:'The most important indecision candle. Context defines meaning.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;gap:0px;">
+      <div style="width:2px;height:26px;background:#1a4a9a;"></div>
+      <div style="width:22px;height:3px;background:#1a4a9a;"></div>
+      <div style="width:2px;height:28px;background:#1a4a9a;"></div>
+    </div>` },
+  { id:'spinning', signal:'neutral', type:'single', name:'Spinning Top',
+    desc:'Small body with roughly equal upper and lower wicks. Indecision with some volatility. Weaker than Doji but similar message — both sides fought and neither won.',
+    hint:'After a long trend, a spinning top warns the move may be exhausting.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:2px;height:22px;background:#888;"></div>
+      <div style="width:16px;height:18px;background:#888;border-radius:2px;"></div>
+      <div style="width:2px;height:22px;background:#888;"></div>
+    </div>` },
+  { id:'dragonfly', signal:'bullish', type:'single', name:'Dragonfly Doji',
+    desc:'Open, high, and close are all at the top; long lower shadow. Strong bullish signal — sellers drove price down but buyers completely recovered by close.',
+    hint:'At the bottom of a downtrend: one of the most powerful reversal signals.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:22px;height:3px;background:#1a7f3c;border-radius:2px;"></div>
+      <div style="width:2px;height:55px;background:#1a7f3c;"></div>
+    </div>` },
+  { id:'gravestone', signal:'bearish', type:'single', name:'Gravestone Doji',
+    desc:'Open, low, and close at the bottom; long upper shadow. Mirror of Dragonfly. Buyers pushed high but sellers crushed them by close. Classic bearish exhaustion at highs.',
+    hint:'Named appropriately — marks the grave of a rally at resistance.',
+    visual: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:70px;">
+      <div style="width:2px;height:55px;background:#c0442a;"></div>
+      <div style="width:22px;height:3px;background:#c0442a;border-radius:2px;"></div>
+    </div>` },
+  // Multi-candle
+  { id:'engulf_bull', signal:'bullish', type:'multi', name:'Bullish Engulfing',
+    desc:'A large green candle completely engulfs the previous red candle\'s body. Powerful reversal signal at support. Institutions absorbing sell orders and stepping in with conviction.',
+    hint:'Add volume — when engulfing candle has 2× normal volume, probability doubles.',
+    visual: `<div style="display:flex;align-items:flex-end;gap:4px;height:70px;">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:6px;background:#c0442a;"></div>
+        <div style="width:12px;height:24px;background:#c0442a;border-radius:2px;"></div>
+        <div style="width:2px;height:6px;background:#c0442a;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:8px;background:#1a7f3c;"></div>
+        <div style="width:18px;height:42px;background:#1a7f3c;border-radius:2px;"></div>
+        <div style="width:2px;height:5px;background:#1a7f3c;"></div>
+      </div>
+    </div>` },
+  { id:'engulf_bear', signal:'bearish', type:'multi', name:'Bearish Engulfing',
+    desc:'A large red candle completely engulfs the previous green candle. Reversal at resistance. Distribution pattern — smart money offloading while retail buys the "breakout".',
+    hint:'Most effective at 52-week highs or previous major resistance.',
+    visual: `<div style="display:flex;align-items:flex-end;gap:4px;height:70px;">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:6px;background:#1a7f3c;"></div>
+        <div style="width:12px;height:24px;background:#1a7f3c;border-radius:2px;"></div>
+        <div style="width:2px;height:6px;background:#1a7f3c;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:8px;background:#c0442a;"></div>
+        <div style="width:18px;height:42px;background:#c0442a;border-radius:2px;"></div>
+        <div style="width:2px;height:5px;background:#c0442a;"></div>
+      </div>
+    </div>` },
+  { id:'morning_star', signal:'bullish', type:'multi', name:'Morning Star',
+    desc:'Three-candle pattern: big red candle → small indecision candle (gaps down) → big green candle. Definitive bottom reversal. The small middle candle is the "star" representing the turning point.',
+    hint:'One of the highest-probability reversal patterns. Common on weekly charts.',
+    visual: `<div style="display:flex;align-items:flex-end;gap:3px;height:70px;">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:14px;height:44px;background:#c0442a;border-radius:2px;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:2px;">
+        <div style="width:2px;height:6px;background:#888;"></div>
+        <div style="width:10px;height:12px;background:#888;border-radius:2px;"></div>
+        <div style="width:2px;height:6px;background:#888;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:14px;height:44px;background:#1a7f3c;border-radius:2px;"></div>
+      </div>
+    </div>` },
+  { id:'evening_star', signal:'bearish', type:'multi', name:'Evening Star',
+    desc:'Mirror of Morning Star at a peak. Big green → small star (gap up) → big red. Three-candle top reversal. The star represents buying exhaustion before the sellers take over.',
+    hint:'Evening Star on weekly chart of an index is a major market warning.',
+    visual: `<div style="display:flex;align-items:flex-end;gap:3px;height:70px;">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:14px;height:44px;background:#1a7f3c;border-radius:2px;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:6px;background:#888;"></div>
+        <div style="width:10px;height:12px;background:#888;border-radius:2px;margin-top:auto;"></div>
+        <div style="width:2px;height:6px;background:#888;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:14px;height:44px;background:#c0442a;border-radius:2px;"></div>
+      </div>
+    </div>` },
+  { id:'tweezer_top', signal:'bearish', type:'multi', name:'Tweezer Top',
+    desc:'Two consecutive candles with identical highs — one green, one red. Signals double rejection at a resistance level. Simple yet effective confirmation of supply zone.',
+    hint:'More reliable when the wicks match exactly, not just the bodies.',
+    visual: `<div style="display:flex;align-items:flex-start;gap:3px;height:70px;padding-top:4px;">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:10px;background:#1a7f3c;"></div>
+        <div style="width:14px;height:32px;background:#1a7f3c;border-radius:2px;"></div>
+        <div style="width:2px;height:6px;background:#1a7f3c;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:10px;background:#c0442a;"></div>
+        <div style="width:14px;height:32px;background:#c0442a;border-radius:2px;"></div>
+        <div style="width:2px;height:6px;background:#c0442a;"></div>
+      </div>
+    </div>` },
+  { id:'inside_bar', signal:'neutral', type:'multi', name:'Inside Bar',
+    desc:'Second candle\'s high and low are completely within the first. Represents compression and energy build-up. Breakout direction from inside bar often leads to strong trending move.',
+    hint:'Favourite of price-action traders. Works beautifully on daily charts after trends.',
+    visual: `<div style="display:flex;align-items:center;gap:3px;height:70px;">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:2px;height:12px;background:#888;"></div>
+        <div style="width:18px;height:40px;background:#1a4a9a;border-radius:2px;"></div>
+        <div style="width:2px;height:12px;background:#888;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:2px;height:8px;background:#c0442a;"></div>
+        <div style="width:13px;height:22px;background:#c0442a;border-radius:2px;"></div>
+        <div style="width:2px;height:8px;background:#c0442a;"></div>
+      </div>
+    </div>` },
+  { id:'three_white', signal:'bullish', type:'multi', name:'Three White Soldiers',
+    desc:'Three consecutive bullish candles, each opening within the prior body and closing near its high. Textbook strong uptrend confirmation after a consolidation or bottom.',
+    hint:'Most powerful after a prolonged base — common signal in institutional buying phases.',
+    visual: `<div style="display:flex;align-items:flex-end;gap:2px;height:70px;">
+      <div style="width:13px;height:28px;background:#1a7f3c;border-radius:2px;"></div>
+      <div style="width:13px;height:42px;background:#1a7f3c;border-radius:2px;"></div>
+      <div style="width:13px;height:58px;background:#1a7f3c;border-radius:2px;"></div>
+    </div>` },
+  { id:'three_black', signal:'bearish', type:'multi', name:'Three Black Crows',
+    desc:'Three consecutive bearish candles, each opening within the prior body and closing near its low. Textbook distribution pattern — smart money aggressively selling into any rally.',
+    hint:'Most bearish pattern in Japanese candlestick theory — respect it.',
+    visual: `<div style="display:flex;align-items:flex-end;gap:2px;height:70px;">
+      <div style="width:13px;height:58px;background:#c0442a;border-radius:2px;"></div>
+      <div style="width:13px;height:42px;background:#c0442a;border-radius:2px;"></div>
+      <div style="width:13px;height:28px;background:#c0442a;border-radius:2px;"></div>
+    </div>` },
+];
+
+const OLD_SCHOOL_METHODS = [
+  { name:'Dow Theory (1900)', founder:'Charles Dow', era:'1900s', 
+    principles:['Markets move in three concurrent trends: Primary (months–years), Secondary (weeks–months), Minor (days–weeks)','Both the Dow Jones Industrial and Transport Averages must confirm each other for a valid signal','Volume must confirm the trend — rising prices with falling volume is suspect','Trends remain in force until a definitive reversal signal appears'],
+    tools:'Price patterns, Dow Jones averages, volume analysis, newspaper reading',
+    legacy:'The original framework. Every technical analyst alive owes something to Dow Theory.' },
+  { name:'Wyckoff Method (1930)', founder:'Richard Wyckoff', era:'1930s',
+    principles:['Markets move through Accumulation → Markup → Distribution → Markdown phases','Composite Man (smart money) is always planning — observe volume and price spread','Supply and demand analysis across bar-by-bar price action','Three laws: Supply & Demand, Cause & Effect, Effort vs. Result'],
+    tools:'Bar charts, volume analysis, market breadth, tape reading, "schematic" diagrams',
+    legacy:'The grandfather of Smart Money Concepts. Modern SMC is largely repackaged Wyckoff.' },
+  { name:'Gann Theory (1920s)', founder:'W.D. Gann', era:'1920s–1950s',
+    principles:['Price and time are equally important — the "square" of price and time','Geometric angles (1×1, 2×1, 1×2) on price charts reveal dynamic support/resistance','Natural numbers and cycles (90, 144, 180, 360 degrees) govern market moves','Price, time, and range — when all three balance, expect a major turn'],
+    tools:'Square of 9, Gann wheel, fan lines, hexagons, annual forecasting charts',
+    legacy:'Extremely complex and controversial. Dedicated practitioners swear by it; critics dismiss it.' },
+  { name:'Livermore Method (1910–40)', founder:'Jesse Livermore', era:'1910s–1940s',
+    principles:['Trade in the direction of least resistance — identify the "line of least resistance"','Wait for the market to confirm your thesis before entering — patience is key','Key price levels act as psychological barriers — respect round numbers','Cut losses without mercy; let profits run. Never average a loser.'],
+    tools:'Price tape, sector leaders, volume, key pivot numbers, newspaper sentiment',
+    legacy:'The original trading legend. His rules about emotion and money management are timeless.' },
+  { name:'Elliott Wave Theory (1938)', founder:'Ralph Nelson Elliott', era:'1930s–1940s',
+    principles:['Prices move in 5 waves in the direction of trend, 3 waves in correction','Each wave is subdivided into smaller waves of the same structure — fractal nature','Wave 3 is never the shortest impulse wave','Wave 4 never overlaps Wave 1 territory (in classical application)'],
+    tools:'Wave counting, Fibonacci ratios for wave targets, degree labelling',
+    legacy:'Beloved and debated equally. Requires significant practice; highly subjective at real-time.' },
+];
+
+const MODERN_METHODS = [
+  { name:'Smart Money Concepts (SMC)', origin:'ICT / Michael Huddleston', era:'2010s–Present',
+    principles:['Liquidity pools form above swing highs and below swing lows — smart money hunts them','Order Blocks: last bearish candle before a bullish impulse (and vice versa) are institutional orders','Fair Value Gaps (FVG / Imbalances) are always revisited before major continuation','Market Structure Shifts (BOS/CHOCH) signal trend changes at institutional entry points'],
+    tools:'Order blocks, liquidity levels, FVG, BOS/CHOCH, optimal trade entry (OTE), time & price theory',
+    verdict:'Highly popular retail framework. Rebrands Wyckoff/Auction theory in modern language. Effective when not over-mechanised.' },
+  { name:'Order Flow Trading', origin:'Professional futures traders', era:'2000s–Present',
+    principles:['DOM (Depth of Market) and footprint charts show actual resting limit orders','Delta analysis: difference between buy and sell volume at each price level','Absorption: when large volume appears at a level without price movement, it\'s institutional','Imbalanced order flow in one direction often precedes explosive moves'],
+    tools:'Footprint charts, volume profile, DOM, cumulative delta, VWAP, time & sales',
+    verdict:'The most "true" form of market analysis. Used by professional futures and options traders globally.' },
+  { name:'Algorithmic & Quantitative Trading', origin:'Academia + Hedge Funds', era:'1990s–Present',
+    principles:['Statistical backtesting over thousands of trades for edge validation','Factor investing: momentum, value, quality, low volatility factors with proven long-term edge','Machine learning models for pattern recognition at scale','Risk-adjusted returns (Sharpe, Calmar) matter more than raw returns'],
+    tools:'Python (pandas, backtrader), R, Bloomberg terminal, alternative data, ML/AI frameworks',
+    verdict:'The dominant approach at institutional level. Retail traders increasingly adopt quantitative methods.' },
+  { name:'Volume Profile & Market Auction', origin:'Peter Steidlmayer (CBOT)', era:'1980s–Present',
+    principles:['Markets are auction mechanisms — price seeks the most-traded value area','Value Area (VAH/VAL/POC) defines fair value for the session','High Volume Nodes are magnets; Low Volume Nodes are thin, fast-moving zones','VPOC migration signals shifting value and potential trend direction'],
+    tools:'TPO charts (Market Profile), volume profile, VWAP, developing VPOC',
+    verdict:'Essential for futures and index traders. Gives context that pure price action cannot.' },
+];
+
+const FUNDAMENTAL_CATEGORIES = [
+  { cat:'Financial Performance', items:['Revenue Growth (YoY)', 'Profit Growth (YoY)', 'Free Cash Flow Generation', 'Operating Margin Trend', 'Net Profit Margin'] },
+  { cat:'Balance Sheet Strength', items:['Debt-to-Equity Ratio', 'Interest Coverage Ratio', 'Cash Reserves', 'Working Capital Efficiency', 'Asset Quality'] },
+  { cat:'Returns & Efficiency', items:['Return on Equity (ROE)', 'Return on Capital Employed (ROCE)', 'Earnings Per Share (EPS) Growth', 'Operating Cash Flow', 'Inventory Management'] },
+  { cat:'Valuation', items:['P/E Ratio vs Sector', 'Price-to-Book (P/B)', 'EV/EBITDA', 'PEG Ratio (PE vs Growth)', 'Valuation vs Historical Average'] },
+  { cat:'Business Quality', items:['Competitive Advantage / Moat', 'Market Share Trend', 'Management Quality', 'Corporate Governance', 'Brand Value & Customer Retention'] },
+  { cat:'Growth Prospects', items:['Industry Growth Potential', 'Business Model Scalability', 'Innovation Strength', 'Expansion Plans', 'Export/Import Dependency'] },
+  { cat:'Ownership & Sentiment', items:['Promoter Holding Trend', 'Institutional Holding (FII/DII)', 'Insider Buying/Selling', 'Quarterly Result Consistency', 'CAGR over 5 Years'] },
+  { cat:'Risk Factors', items:['Regulatory Risks', 'Raw Material Dependency', 'Global / Macro Exposure', 'Long-Term Sustainability', 'Dividend History'] },
+];
+
+const RATIOS_EXPLAINED = [
+  { ratio:'P/E Ratio', formula:'Market Price / EPS', meaning:'How much you pay for ₹1 of earnings. High P/E means growth expectations; low can mean value or poor outlook.', benchmark:'India: 20–25 avg. US: 25–30 avg.' },
+  { ratio:'ROE', formula:'Net Profit / Shareholders Equity × 100', meaning:'How efficiently management uses equity to generate profit. Higher is better. Buffett wants >15% consistently.', benchmark:'>15% = good | >20% = excellent' },
+  { ratio:'ROCE', formula:'EBIT / Capital Employed × 100', meaning:'Measures return on ALL capital (equity + debt). Better than ROE for capital-intensive businesses.', benchmark:'>15% consistently is the hallmark of quality' },
+  { ratio:'Debt/Equity', formula:'Total Debt / Shareholders Equity', meaning:'Financial leverage. High D/E means more financial risk, especially in rising rate environments.', benchmark:'<1 is conservative | >2 is aggressive' },
+  { ratio:'Free Cash Flow', formula:'Operating Cash Flow − Capex', meaning:'Cash left after maintaining and growing the business. The truest measure of profitability.', benchmark:'Positive FCF for 3+ consecutive years = quality business' },
+  { ratio:'EV/EBITDA', formula:'Enterprise Value / EBITDA', meaning:'Valuation metric that accounts for debt. Better than P/E for comparing leveraged companies.', benchmark:'<10 is cheap | 15–20 is fair for growth | >25 is expensive' },
+  { ratio:'Current Ratio', formula:'Current Assets / Current Liabilities', meaning:'Short-term liquidity health. Can the company pay its near-term obligations?', benchmark:'>1.5 is healthy | <1 is warning sign' },
+  { ratio:'PEG Ratio', formula:'P/E Ratio / EPS Growth Rate', meaning:'Adjusts P/E for growth rate. A P/E of 30 with 30% growth (PEG=1) may be fair value.', benchmark:'<1 = undervalued for growth | 1–2 = fair | >2 = expensive' },
+];
+
+/* ===========================
+   CURRENCY & DISPLAY
+   =========================== */
+let isCurrUSD = false;
+const USD_IDS = ['c1','c2','c3','c4','c5','c6','c7','c8','c9','c10','crm1','crm2','crm3'];
+
+function toggleCurrency() {
+  isCurrUSD = document.getElementById('currToggle').checked;
+  document.getElementById('currLabel').textContent = isCurrUSD ? 'USD Mode' : 'INR Mode';
+  document.getElementById('currLabel').className = isCurrUSD ? 'badge badge-gold' : 'badge badge-teal';
+  USD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = isCurrUSD ? '$' : '₹';
+  });
+}
+
+function currSym() { return isCurrUSD ? '$' : '₹'; }
+
+function fmt(num, decimals=0) {
+  if (isNaN(num)) return '—';
+  const abs = Math.abs(num);
+  const sym = currSym();
+  if (isCurrUSD) {
+    return (num < 0 ? '-' : '') + sym + abs.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  } else {
+    // Indian number system
+    if (abs >= 1e7) return (num < 0 ? '-' : '') + sym + (abs/1e7).toFixed(2) + ' Cr';
+    if (abs >= 1e5) return (num < 0 ? '-' : '') + sym + (abs/1e5).toFixed(2) + ' L';
+    return (num < 0 ? '-' : '') + sym + abs.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+}
+
+/* ===========================
+   TAB SWITCHING
+   =========================== */
+function showTab(name, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (el) {
+    el.classList.add('active');
+    // sync both nav sets
+    const text = el.textContent.trim();
+    document.querySelectorAll('.tab-btn').forEach(b => { if (b.textContent.includes(text.replace(/^[^ ]+ /,'').split(' ')[0])) b.classList.add('active'); });
+    document.querySelectorAll('.chip').forEach(c => { if (c.textContent.trim() === text) c.classList.add('active'); });
+  }
+}
+
+/* ===========================
+   CALCULATORS
+   =========================== */
+
+function calcPositionSize() {
+  const cap = +document.getElementById('ps_capital').value;
+  const risk = +document.getElementById('ps_risk').value / 100;
+  const entry = +document.getElementById('ps_entry').value;
+  const sl = +document.getElementById('ps_sl').value;
+  if (!cap || !risk || !entry || !sl || entry <= 0 || sl <= 0) return;
+  const riskAmt = cap * risk;
+  const slDist = Math.abs(entry - sl);
+  const qty = Math.floor(riskAmt / slDist);
+  const deployed = qty * entry;
+  const actualRisk = qty * slDist;
+  const slPct = (slDist / entry * 100).toFixed(2);
+
+  const r = document.getElementById('ps_result');
+  r.style.display = 'block';
+  document.getElementById('ps_qty').textContent = qty.toLocaleString() + ' shares';
+  document.getElementById('ps_deployed').textContent = fmt(deployed);
+  document.getElementById('ps_maxrisk').textContent = fmt(actualRisk);
+  document.getElementById('ps_sldist').textContent = slPct + '%';
+}
+
+function calcPnL() {
+  const type = document.getElementById('pl_type').value;
+  const buy = +document.getElementById('pl_buy').value;
+  const sell = +document.getElementById('pl_sell').value;
+  const qty = +document.getElementById('pl_qty').value;
+  const lotsize = +document.getElementById('pl_lotsize').value || 1;
+  const totalQty = qty * lotsize;
+  const gross = (sell - buy) * totalQty;
+  const turnover = (buy + sell) * totalQty;
+
+  let brokerage = 0, stt = 0, gst = 0, stamp = 0, sebi = 0, exchange = 0;
+  const brokerFlat = 20; // flat fee per order
+  if (type === 'equity_delivery') {
+    brokerage = 0; // zero brokerage delivery
+    stt = buy * totalQty * 0.001 + sell * totalQty * 0.001;
+    exchange = turnover * 0.0000345;
+    stamp = buy * totalQty * 0.00015;
+    sebi = turnover * 0.000001;
+  } else if (type === 'equity_intraday') {
+    brokerage = Math.min(brokerFlat * 2, turnover * 0.0003);
+    stt = sell * totalQty * 0.00025;
+    exchange = turnover * 0.0000345;
+    stamp = buy * totalQty * 0.00003;
+    sebi = turnover * 0.000001;
+  } else if (type === 'futures') {
+    brokerage = brokerFlat * 2;
+    stt = sell * totalQty * 0.0001;
+    exchange = turnover * 0.0000019;
+    stamp = buy * totalQty * 0.00002;
+    sebi = turnover * 0.000001;
+  } else if (type === 'options') {
+    brokerage = brokerFlat * 2;
+    stt = sell * totalQty * 0.001;
+    exchange = turnover * 0.00053;
+    stamp = buy * totalQty * 0.00003;
+    sebi = turnover * 0.000001;
+  } else if (type === 'us_stock') {
+    brokerage = 0;
+    stt = 0;
+    const finraTaf = totalQty * 0.000145;
+    exchange = finraTaf;
+    sebi = turnover * 0.0000278;
+  } else if (type === 'forex') {
+    brokerage = turnover * 0.00001;
+    exchange = 0; stt = 0; sebi = 0; stamp = 0;
+  }
+  gst = (brokerage + exchange) * 0.18;
+  const totalCharges = brokerage + stt + gst + stamp + sebi + exchange;
+  const net = gross - totalCharges;
+  const invested = buy * totalQty;
+  const retPct = invested > 0 ? (net / invested * 100).toFixed(2) : 0;
+
+  const r = document.getElementById('pl_result');
+  r.style.display = 'block';
+  document.getElementById('pl_gross').textContent = fmt(gross);
+  document.getElementById('pl_charges').textContent = fmt(totalCharges, 2);
+  document.getElementById('pl_net').innerHTML = `<span style="color:${net>=0?'#a0f0c0':'#ffaaaa'}">${fmt(net, 2)}</span>`;
+  document.getElementById('pl_pct').innerHTML = `<span style="color:${retPct>=0?'#a0f0c0':'#ffaaaa'}">${retPct}%</span>`;
+  document.getElementById('pl_breakdown').innerHTML = `
+    <table style="width:100%; font-size:11px; color:rgba(255,255,255,0.65);">
+      <tr><td>Brokerage</td><td style="text-align:right">${fmt(brokerage,2)}</td></tr>
+      <tr><td>STT / Tax</td><td style="text-align:right">${fmt(stt,2)}</td></tr>
+      <tr><td>GST / Misc</td><td style="text-align:right">${fmt(gst,2)}</td></tr>
+      <tr><td>Stamp + SEBI</td><td style="text-align:right">${fmt(stamp+sebi,2)}</td></tr>
+      <tr><td>Exchange</td><td style="text-align:right">${fmt(exchange,2)}</td></tr>
+    </table>`;
+}
+
+function updatePLForm() {
+  const type = document.getElementById('pl_type').value;
+  document.getElementById('pl_lot_field').style.display = (type === 'futures' || type === 'options') ? 'block' : 'none';
+}
+updatePLForm();
+
+function calcRR() {
+  const entry = +document.getElementById('rr_entry').value;
+  const sl = +document.getElementById('rr_sl').value;
+  const ratio = +document.getElementById('rr_ratio').value;
+  const dir = document.getElementById('rr_dir').value;
+  const risk = Math.abs(entry - sl);
+  const reward = risk * ratio;
+  const t1 = dir === 'long' ? entry + reward : entry - reward;
+  const t2 = dir === 'long' ? entry + reward * 1.5 : entry - reward * 1.5;
+  const minWin = (1 / (ratio + 1) * 100).toFixed(1);
+
+  const r = document.getElementById('rr_result');
+  r.style.display = 'block';
+  document.getElementById('rr_t1').textContent = fmt(t1, 2);
+  document.getElementById('rr_t2').textContent = fmt(t2, 2);
+  document.getElementById('rr_risk').textContent = fmt(risk, 2);
+  document.getElementById('rr_reward').textContent = fmt(reward, 2);
+  document.getElementById('rr_win_info').innerHTML = `
+    Minimum win rate needed to break even at 1:${ratio} R:R = <strong style="color:var(--gold-lt)">${minWin}%</strong>. 
+    At your R:R, you can be profitable with fewer than half your trades winning.
+  `;
+}
+
+function calcFibonacci() {
+  const high = +document.getElementById('fib_high').value;
+  const low = +document.getElementById('fib_low').value;
+  const dir = document.getElementById('fib_dir').value;
+  const range = high - low;
+  const retraceLevels = [
+    { label:'0%', ratio:0, type:'Swing Start' },
+    { label:'23.6%', ratio:0.236, type:'Minor Retracement' },
+    { label:'38.2%', ratio:0.382, type:'Strong Retracement' },
+    { label:'50%', ratio:0.5, type:'Key Psychological Level' },
+    { label:'61.8%', ratio:0.618, type:'Golden Ratio (Key Level)' },
+    { label:'78.6%', ratio:0.786, type:'Deep Retracement' },
+    { label:'100%', ratio:1.0, type:'Full Retracement' },
+    { label:'127.2%', ratio:1.272, type:'Extension Level 1' },
+    { label:'161.8%', ratio:1.618, type:'Golden Extension' },
+    { label:'200%', ratio:2.0, type:'Extension Level 2' },
+    { label:'261.8%', ratio:2.618, type:'Major Extension' },
+  ];
+  const tbody = document.getElementById('fib_tbody');
+  tbody.innerHTML = '';
+  retraceLevels.forEach(l => {
+    const price = dir === 'up' ? high - l.ratio * range : low + l.ratio * range;
+    const isKey = [0.382, 0.5, 0.618, 1.618].includes(l.ratio);
+    tbody.innerHTML += `<tr${isKey ? ' style="background:rgba(26,127,110,0.10); font-weight:600;"' : ''}>
+      <td>${l.label}</td><td>${l.ratio.toFixed(3)}</td>
+      <td style="font-family:var(--font-mono)">${fmt(price, 2)}</td>
+      <td>${l.type}</td>
+    </tr>`;
+  });
+  document.getElementById('fib_result').style.display = 'block';
+}
+
+function calcPivots() {
+  const H = +document.getElementById('pv_high').value;
+  const L = +document.getElementById('pv_low').value;
+  const C = +document.getElementById('pv_close').value;
+  const method = document.getElementById('pv_method').value;
+  let levels = [];
+
+  if (method === 'standard') {
+    const P = (H + L + C) / 3;
+    levels = [
+      { label:'R3', val: P + (H - L) * 2, sig: 'Strong Resistance', cls:'red' },
+      { label:'R2', val: P + (H - L), sig: 'Key Resistance', cls:'red' },
+      { label:'R1', val: 2 * P - L, sig: 'Minor Resistance', cls:'amber' },
+      { label:'PP', val: P, sig: 'Pivot Point (Bias)', cls:'navy' },
+      { label:'S1', val: 2 * P - H, sig: 'Minor Support', cls:'amber' },
+      { label:'S2', val: P - (H - L), sig: 'Key Support', cls:'green' },
+      { label:'S3', val: P - (H - L) * 2, sig: 'Strong Support', cls:'green' },
+    ];
+  } else if (method === 'camarilla') {
+    const R = H - L;
+    levels = [
+      { label:'H4', val: C + R * 1.1 / 2, sig: 'Breakout Level (Long)', cls:'red' },
+      { label:'H3', val: C + R * 1.1 / 4, sig: 'Sell Short Stop', cls:'red' },
+      { label:'H2', val: C + R * 1.1 / 6, sig: 'Resistance 2', cls:'amber' },
+      { label:'H1', val: C + R * 1.1 / 12, sig: 'Resistance 1', cls:'amber' },
+      { label:'L1', val: C - R * 1.1 / 12, sig: 'Support 1', cls:'amber' },
+      { label:'L2', val: C - R * 1.1 / 6, sig: 'Support 2', cls:'amber' },
+      { label:'L3', val: C - R * 1.1 / 4, sig: 'Buy Long Stop', cls:'green' },
+      { label:'L4', val: C - R * 1.1 / 2, sig: 'Breakdown Level (Short)', cls:'green' },
+    ];
+  } else if (method === 'fibonacci') {
+    const P = (H + L + C) / 3;
+    const R = H - L;
+    levels = [
+      { label:'R3', val: P + R * 1.0, sig: '100% Extension', cls:'red' },
+      { label:'R2', val: P + R * 0.618, sig: '61.8% Fib', cls:'red' },
+      { label:'R1', val: P + R * 0.382, sig: '38.2% Fib', cls:'amber' },
+      { label:'PP', val: P, sig: 'Pivot Point', cls:'navy' },
+      { label:'S1', val: P - R * 0.382, sig: '38.2% Fib', cls:'amber' },
+      { label:'S2', val: P - R * 0.618, sig: '61.8% Fib', cls:'green' },
+      { label:'S3', val: P - R * 1.0, sig: '100% Extension', cls:'green' },
+    ];
+  } else if (method === 'woodie') {
+    const P = (H + L + 2 * C) / 4;
+    levels = [
+      { label:'R2', val: P + (H - L), sig: 'Resistance 2', cls:'red' },
+      { label:'R1', val: 2 * P - L, sig: 'Resistance 1', cls:'amber' },
+      { label:'PP', val: P, sig: 'Woodie Pivot (Close-weighted)', cls:'navy' },
+      { label:'S1', val: 2 * P - H, sig: 'Support 1', cls:'amber' },
+      { label:'S2', val: P - (H - L), sig: 'Support 2', cls:'green' },
+    ];
+  }
+
+  const tbody = document.getElementById('pv_tbody');
+  tbody.innerHTML = levels.map(l => `
+    <tr>
+      <td><strong>${l.label}</strong></td>
+      <td class="${l.cls}" style="font-family:var(--font-mono); font-weight:600">${l.val.toFixed(2)}</td>
+      <td>${l.sig}</td>
+    </tr>`).join('');
+  document.getElementById('pv_result').style.display = 'block';
+}
+
+function calcCompound() {
+  const cap = +document.getElementById('cg_capital').value;
+  const monthly = +document.getElementById('cg_monthly').value / 100;
+  const months = +document.getElementById('cg_months').value;
+  const wr = +document.getElementById('cg_winrate').value / 100;
+  const final = cap * Math.pow(1 + monthly, months);
+  const gain = final - cap;
+  const years = months / 12;
+  const cagr = years > 0 ? ((Math.pow(final / cap, 1 / years) - 1) * 100).toFixed(1) : 0;
+  // Max consecutive losses (geometric)
+  const maxLoss = Math.ceil(Math.log(0.05) / Math.log(1 - wr));
+
+  const r = document.getElementById('cg_result');
+  r.style.display = 'block';
+  document.getElementById('cg_final').textContent = fmt(final);
+  document.getElementById('cg_gain').textContent = fmt(gain);
+  document.getElementById('cg_cagr').textContent = cagr + '%';
+  document.getElementById('cg_streak').textContent = maxLoss + ' losses';
+}
+
+function calcMargin() {
+  const price = +document.getElementById('mg_price').value;
+  const qty = +document.getElementById('mg_qty').value;
+  const lev = +document.getElementById('mg_lev').value / 100;
+  const contractVal = price * qty;
+  const marginReq = contractVal * lev;
+  const effectiveLev = (contractVal / marginReq).toFixed(1) + 'x';
+  const onePercent = contractVal * 0.01;
+
+  document.getElementById('mg_result').style.display = 'block';
+  document.getElementById('mg_cv').textContent = fmt(contractVal);
+  document.getElementById('mg_req').textContent = fmt(marginReq);
+  document.getElementById('mg_eff').textContent = effectiveLev;
+  document.getElementById('mg_impact').textContent = fmt(onePercent, 2);
+}
+
+/* ===========================
+   RISK MANAGER
+   =========================== */
+function calcRiskDash() {
+  const cap = +document.getElementById('rm_capital').value;
+  const daily = +document.getElementById('rm_daily').value / 100;
+  const maxdd = +document.getElementById('rm_maxdd').value / 100;
+  const pertrade = +document.getElementById('rm_pertrade').value / 100;
+  const maxpos = +document.getElementById('rm_maxpos').value;
+  const wl = +document.getElementById('rm_wl').value;
+  const wr = +document.getElementById('rm_winrate').value / 100;
+
+  const dailyLimit = cap * daily;
+  const ddLimit = cap * maxdd;
+  const tradeRisk = cap * pertrade;
+  const totalPortRisk = tradeRisk * maxpos;
+  const expValue = (wr * wl - (1 - wr)).toFixed(3);
+  const sharpe = ((wr * wl - (1 - wr)) / Math.sqrt(wr * (1-wr) * (wl*wl + 1))).toFixed(2);
+  const riskScore = Math.min(100, Math.round((pertrade * 100) * 15 + (1 - wr) * 30 + (maxpos > 5 ? 15 : 0)));
+  const riskColor = riskScore < 30 ? '#1a7f3c' : riskScore < 60 ? '#c8922a' : '#c0442a';
+
+  document.getElementById('rmDash').innerHTML = `
+    <div class="grid-2" style="gap:14px; margin-bottom:14px;">
+      <div class="stat-card"><div class="s-label">Daily Loss Limit</div><div class="s-value">${fmt(dailyLimit)}</div><div class="s-sub">Hard stop for the session</div></div>
+      <div class="stat-card warn"><div class="s-label">Max Drawdown Limit</div><div class="s-value">${fmt(ddLimit)}</div><div class="s-sub">Portfolio risk threshold</div></div>
+      <div class="stat-card"><div class="s-label">Risk per Trade</div><div class="s-value">${fmt(tradeRisk)}</div><div class="s-sub">${(pertrade*100).toFixed(1)}% of portfolio</div></div>
+      <div class="stat-card ${expValue > 0 ? '' : 'danger'}"><div class="s-label">Expected Value per ₹</div><div class="s-value ${expValue > 0 ? 'green' : 'red'}">${expValue}</div><div class="s-sub">${expValue > 0 ? 'Positive edge — trade!' : 'Negative edge — review system'}</div></div>
+    </div>
+    <div class="stat-card" style="margin-bottom:12px;">
+      <div class="s-label">Max Simultaneous Exposure</div>
+      <div class="s-value">${fmt(totalPortRisk)}</div>
+      <div class="s-sub">${maxpos} positions × ${fmt(tradeRisk)} risk each = ${((totalPortRisk/cap)*100).toFixed(1)}% of capital at risk</div>
+    </div>
+    <div class="risk-meter">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:600; color:var(--slate);">Portfolio Risk Score</span>
+        <span style="font-size:12px; font-weight:700; color:${riskColor}">${riskScore}/100</span>
+      </div>
+      <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${riskScore}%; background:${riskColor};"></div></div>
+      <div class="risk-labels"><span>Conservative</span><span>Moderate</span><span>Aggressive</span></div>
+    </div>
+    <div style="padding:12px; background:var(--sage); border-radius:8px; font-size:12px; color:var(--slate); margin-top:8px;">
+      <strong>Estimated Sharpe Ratio:</strong> ${sharpe} &nbsp;|&nbsp;
+      <strong>Win Rate:</strong> ${(wr*100).toFixed(0)}% &nbsp;|&nbsp;
+      <strong>Win:Loss:</strong> 1:${wl}
+      <br><em style="color:var(--muted);">Sharpe >1 = good risk-adjusted returns | >2 = excellent</em>
+    </div>
+  `;
+}
+
+function calcKelly() {
+  const winProb = +document.getElementById('kc_win').value / 100;
+  const avgWin = +document.getElementById('kc_avgwin').value;
+  const avgLoss = +document.getElementById('kc_avgloss').value;
+  const b = avgWin / avgLoss;
+  const kelly = ((winProb * (b + 1) - 1) / b * 100).toFixed(2);
+  const halfKelly = (kelly / 2).toFixed(2);
+  const quarterKelly = (kelly / 4).toFixed(2);
+  const ev = (winProb * avgWin - (1 - winProb) * avgLoss).toFixed(2);
+
+  document.getElementById('kc_result').style.display = 'block';
+  document.getElementById('kc_full').textContent = kelly + '%';
+  document.getElementById('kc_half').textContent = halfKelly + '%';
+  document.getElementById('kc_quarter').textContent = quarterKelly + '%';
+  document.getElementById('kc_ev').innerHTML = `<span class="${ev>0?'green':'red'}">${ev}</span>`;
+  document.getElementById('kc_note').innerHTML = kelly > 0
+    ? `<strong>Kelly recommends risking ${kelly}% per trade.</strong> Most practitioners use Half Kelly (${halfKelly}%) or Quarter Kelly (${quarterKelly}%) to reduce volatility and protect against estimation errors. Full Kelly maximises geometric growth but creates significant drawdowns.`
+    : `<strong style="color:var(--rust);">Negative Kelly (${kelly}%) — this system has a negative expectancy.</strong> Do not trade this strategy as configured. Review your win rate or win:loss ratio.`;
+}
+
+/* ===========================
+   STRATEGIES RENDER
+   =========================== */
+let stratFilter = 'all';
+
+function renderStrats() {
+  const grid = document.getElementById('stratGrid');
+  const filtered = stratFilter === 'all' ? STRATEGIES : STRATEGIES.filter(s => s.tag === stratFilter);
+  grid.innerHTML = filtered.map(s => `
+    <div class="strat-card" onclick="showStratDetail('${s.id}')">
+      <span class="sc-tag tag-${s.tag}">${s.tag}</span>
+      <h4>${s.name}</h4>
+      <p>${s.desc.substring(0, 100)}...</p>
+    </div>`).join('');
+}
+
+function filterStrats(tag) {
+  stratFilter = tag;
+  renderStrats();
+  document.getElementById('stratModal').style.display = 'none';
+}
+
+function showStratDetail(id) {
+  const s = STRATEGIES.find(x => x.id === id);
+  if (!s) return;
+  const modal = document.getElementById('stratModal');
+  document.getElementById('stratModalContent').innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+      <div>
+        <span class="sc-tag tag-${s.tag}" style="display:inline-block; margin-bottom:10px;">${s.tag}</span>
+        <div class="card-title">${s.name}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('stratModal').style.display='none'">✕ Close</button>
+    </div>
+    <p style="font-size:14px; color:var(--slate); line-height:1.7; margin-top:8px;">${s.desc}</p>
+  `;
+  modal.style.display = 'block';
+  modal.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* ===========================
+   CANDLES RENDER
+   =========================== */
+let candleFilter = 'all';
+
+function renderCandles() {
+  const grid = document.getElementById('candleGrid');
+  let filtered = CANDLE_PATTERNS;
+  if (candleFilter === 'bullish') filtered = filtered.filter(c => c.signal === 'bullish');
+  else if (candleFilter === 'bearish') filtered = filtered.filter(c => c.signal === 'bearish');
+  else if (candleFilter === 'neutral') filtered = filtered.filter(c => c.signal === 'neutral');
+  else if (candleFilter === 'single') filtered = filtered.filter(c => c.type === 'single');
+  else if (candleFilter === 'multi') filtered = filtered.filter(c => c.type === 'multi');
+
+  grid.innerHTML = filtered.map(c => `
+    <div class="candle-card">
+      <div class="candle-visual">${c.visual}</div>
+      <h4>${c.name}</h4>
+      <span class="signal signal-${c.signal === 'bullish' ? 'bull' : c.signal === 'bearish' ? 'bear' : 'neut'}">${c.signal}</span>
+      <p>${c.desc}</p>
+      <p style="margin-top:8px; font-size:11px; color:var(--gold); font-style:italic;">💡 ${c.hint}</p>
+    </div>`).join('');
+}
+
+function filterCandles(f) {
+  candleFilter = f;
+  renderCandles();
+}
+
+/* ===========================
+   SCHOOLS RENDER
+   =========================== */
+function renderSchools() {
+  const cont = document.getElementById('schoolsContent');
+  let html = '<div class="section-title" style="margin-top:8px; font-size:22px;">🏛️ Old School Methods</div>';
+  html += '<div class="section-sub">Deep dives into the timeless classical systems</div>';
+
+  OLD_SCHOOL_METHODS.forEach(m => {
+    html += `
+    <div class="card" style="margin-bottom:16px; border-left:4px solid var(--gold);">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+        <div>
+          <div class="card-title">${m.name}</div>
+          <div class="card-sub" style="margin-bottom:0;">Founded by: <strong>${m.founder}</strong> | Era: <strong>${m.era}</strong></div>
+        </div>
+        <span class="badge badge-gold">${m.era}</span>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px; font-weight:700; color:var(--slate); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;">Core Principles</div>
+        ${m.principles.map(p => `<div style="font-size:13px; color:var(--ink); padding:5px 10px; margin-bottom:4px; background:rgba(200,146,42,0.07); border-radius:6px; border-left:3px solid var(--gold);">— ${p}</div>`).join('')}
+      </div>
+      <div style="font-size:12px; color:var(--muted);"><strong>Tools used:</strong> ${m.tools}</div>
+      <div style="font-size:13px; color:var(--navy); margin-top:8px; font-style:italic; padding:10px; background:var(--warm1); border-radius:8px;">🏆 <strong>Legacy:</strong> ${m.legacy}</div>
+    </div>`;
+  });
+
+  html += '<hr class="divider"><div class="section-title" style="font-size:22px;">🚀 Modern School Methods</div>';
+  html += '<div class="section-sub">Contemporary frameworks used by today\'s professional traders</div>';
+
+  MODERN_METHODS.forEach(m => {
+    html += `
+    <div class="card" style="margin-bottom:16px; border-left:4px solid var(--teal);">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+        <div>
+          <div class="card-title">${m.name}</div>
+          <div class="card-sub" style="margin-bottom:0;">Origin: <strong>${m.origin}</strong> | Era: <strong>${m.era}</strong></div>
+        </div>
+        <span class="badge badge-teal">${m.era}</span>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px; font-weight:700; color:var(--slate); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;">Core Principles</div>
+        ${m.principles.map(p => `<div style="font-size:13px; color:var(--ink); padding:5px 10px; margin-bottom:4px; background:rgba(26,127,110,0.07); border-radius:6px; border-left:3px solid var(--teal);">— ${p}</div>`).join('')}
+      </div>
+      <div style="font-size:12px; color:var(--muted);"><strong>Tools used:</strong> ${m.tools}</div>
+      <div style="font-size:13px; color:var(--navy); margin-top:8px; font-style:italic; padding:10px; background:var(--sage); border-radius:8px;">📊 <strong>Verdict:</strong> ${m.verdict}</div>
+    </div>`;
+  });
+
+  // Comparison table
+  html += `
+  <hr class="divider">
+  <div class="card">
+    <div class="card-title">Old School vs Modern School — Head to Head</div>
+    <div class="card-sub">Key philosophical and practical differences</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dimension</th><th>🏛️ Old School</th><th>🚀 Modern School</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Primary Tools</strong></td><td>Bar charts, tape, price patterns</td><td>DOM, footprint, order flow, ML</td></tr>
+          <tr><td><strong>Timeframe</strong></td><td>Daily/Weekly — patient</td><td>Intraday to multi-day — precise</td></tr>
+          <tr><td><strong>Market View</strong></td><td>Cyclic, psychological waves</td><td>Auction-based, institutional flow</td></tr>
+          <tr><td><strong>Data Required</strong></td><td>Price, volume, newspaper</td><td>Level 2, options flow, alt data</td></tr>
+          <tr><td><strong>Learning Curve</strong></td><td>High — art and feel</td><td>High — technical & quantitative</td></tr>
+          <tr><td><strong>Best For</strong></td><td>Stocks, commodities, macro trends</td><td>Futures, forex, index options</td></tr>
+          <tr><td><strong>Biggest Risk</strong></td><td>Subjectivity, cherry-picking</td><td>Over-optimisation, data mining</td></tr>
+          <tr><td><strong>Common Ground</strong></td><td colspan="2" style="text-align:center; background:rgba(26,127,110,0.05);">Support/Resistance, Volume confirmation, Trend direction, Risk management</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+  cont.innerHTML = html;
+}
+
+/* ===========================
+   FUNDAMENTALS
+   =========================== */
+function renderFundamentals() {
+  const form = document.getElementById('fundamentalForm');
+  let html = '';
+  FUNDAMENTAL_CATEGORIES.forEach((cat, ci) => {
+    html += `<div style="margin-bottom:16px;">
+      <div style="font-size:12px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; padding-bottom:4px; border-bottom:1px solid var(--border);">${cat.cat}</div>`;
+    cat.items.slice(0, 3).forEach((item, ii) => {
+      const id = `fund_${ci}_${ii}`;
+      html += `<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+        <label for="${id}" style="font-size:12px; color:var(--slate); flex:1;">${item}</label>
+        <input type="range" id="${id}" min="1" max="10" value="5" style="flex:1.5; accent-color:var(--teal);" oninput="document.getElementById('v${id}').textContent=this.value">
+        <span id="v${id}" style="font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--navy); width:18px; text-align:right;">5</span>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  form.innerHTML = html;
+
+  // Ratios
+  const rc = document.getElementById('ratiosContent');
+  rc.innerHTML = RATIOS_EXPLAINED.map(r => `
+    <div class="accord-item">
+      <div class="accord-head" onclick="toggleAccord(this)">
+        <span>${r.ratio} — <em style="font-size:13px; color:var(--muted);">${r.formula}</em></span>
+        <span class="arrow">›</span>
+      </div>
+      <div class="accord-body">
+        <p style="margin-bottom:8px;">${r.meaning}</p>
+        <div style="padding:8px 12px; background:var(--mint); border-radius:6px; font-size:12px;"><strong>Benchmark:</strong> ${r.benchmark}</div>
+      </div>
+    </div>`).join('');
+}
+
+function calcFundamental() {
+  let total = 0, count = 0;
+  const catScores = [];
+  FUNDAMENTAL_CATEGORIES.forEach((cat, ci) => {
+    let catSum = 0, catCount = 0;
+    cat.items.slice(0, 3).forEach((_, ii) => {
+      const el = document.getElementById(`fund_${ci}_${ii}`);
+      if (el) { catSum += +el.value; catCount++; total += +el.value; count++; }
+    });
+    catScores.push({ cat: cat.cat, avg: catCount ? (catSum / catCount).toFixed(1) : 0 });
+  });
+  const avg = count ? (total / count).toFixed(1) : 0;
+  const pct = (avg / 10 * 100).toFixed(0);
+  const signal = pct >= 75 ? { label:'Strong Buy', color:'var(--teal)', bg:'var(--mint)' }
+    : pct >= 60 ? { label:'Buy / Accumulate', color:'#1a6030', bg:'var(--sage)' }
+    : pct >= 45 ? { label:'Hold / Watch', color:'var(--gold)', bg:'var(--warm1)' }
+    : { label:'Avoid / Sell', color:'var(--rust)', bg:'var(--warm2)' };
+
+  const rpt = document.getElementById('fundamentalReport');
+  rpt.innerHTML = `
+    <div style="text-align:center; padding:20px; background:${signal.bg}; border-radius:12px; margin-bottom:16px;">
+      <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:1px;">Overall Score</div>
+      <div style="font-family:var(--font-display); font-size:48px; color:${signal.color};">${pct}<span style="font-size:22px;">/100</span></div>
+      <div style="display:inline-block; padding:6px 18px; background:${signal.color}; color:#fff; border-radius:20px; font-weight:700; font-size:14px;">${signal.label}</div>
+    </div>
+    ${catScores.map(cs => `
+      <div class="progress-row">
+        <span class="p-label">${cs.cat}</span>
+        <div class="p-bar-bg"><div class="p-bar" style="width:${cs.avg*10}%; background:${cs.avg>=7?'var(--teal)':cs.avg>=5?'var(--gold)':'var(--rust)'};"></div></div>
+        <span class="p-val">${cs.avg}/10</span>
+      </div>`).join('')}
+    <p style="font-size:12px; color:var(--muted); margin-top:14px; font-style:italic;">Score based on ${count} data points. A comprehensive investment decision requires qualitative judgment beyond scores.</p>
+  `;
+}
+
+function toggleAccord(head) {
+  const item = head.closest('.accord-item');
+  item.classList.toggle('open');
+}
+
+/* ===========================
+   INIT
+   =========================== */
+document.addEventListener('DOMContentLoaded', () => {
+  renderStrats();
+  renderCandles();
+  renderSchools();
+  renderFundamentals();
+});
+</script>
+</body>
+</html>
